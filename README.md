@@ -1,3 +1,5 @@
+This repository has been forked from the original for implementation purposes of the paper [Priming Neural Networks](https://arxiv.org/abs/1711.05918) by Amir Rosenfeld, Mahdi Biparva and John. K. Tsotsos.
+
 # SSD: Single Shot MultiBox Object Detector, in PyTorch
 A [PyTorch](http://pytorch.org/) implementation of [Single Shot MultiBox Detector](http://arxiv.org/abs/1512.02325) from the 2016 paper by Wei Liu, Dragomir Anguelov, Dumitru Erhan, Christian Szegedy, Scott Reed, Cheng-Yang, and Alexander C. Berg.  The official and original Caffe code can be found [here](https://github.com/weiliu89/caffe/tree/ssd). 
 - Note: While I would love it if this were my full-time job, this is currently only a hobby of mine so I cannot guarantee that I will be able to dedicate all my time to updating this repo.  That being said, thanks to everyone for your help and feedback it is really appreciated, and I will try to address everything as soon as I can. 
