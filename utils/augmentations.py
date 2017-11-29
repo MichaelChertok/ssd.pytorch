@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # -*- coding: utf-8 -*-
+=======
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 import torch
 from torchvision import transforms
 import cv2
@@ -18,7 +21,11 @@ def jaccard_numpy(box_a, box_b):
     """Compute the jaccard overlap of two sets of boxes.  The jaccard overlap
     is simply the intersection over union of two boxes.
     E.g.:
+<<<<<<< HEAD
 
+=======
+        A ∩ B / A ∪ B = A ∩ B / (area(A) + area(B) - A ∩ B)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     Args:
         box_a: Multiple bounding boxes, Shape: [num_boxes,4]
         box_b: Single bounding box, Shape: [4]

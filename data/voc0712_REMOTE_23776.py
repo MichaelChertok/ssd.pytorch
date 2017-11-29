@@ -1,10 +1,4 @@
 """VOC Dataset Classes
-<<<<<<< HEAD
-Original author: Francisco Massa
-https://github.com/fmassa/vision/blob/voc_dataset/torchvision/datasets/voc.py
-Updated by: Ellis Brown, Max deGroot
-"""
-=======
 
 Original author: Francisco Massa
 https://github.com/fmassa/vision/blob/voc_dataset/torchvision/datasets/voc.py
@@ -12,7 +6,6 @@ https://github.com/fmassa/vision/blob/voc_dataset/torchvision/datasets/voc.py
 Updated by: Ellis Brown, Max deGroot
 """
 
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 import os
 import os.path
 import sys
@@ -38,11 +31,6 @@ VOC_CLASSES = (  # always index 0
 COLORS = ((255, 0, 0, 128), (0, 255, 0, 128), (0, 0, 255, 128),
           (0, 255, 255, 128), (255, 0, 255, 128), (255, 255, 0, 128))
 
-<<<<<<< HEAD
-import pickle
-#top_down_source = pickle.load(open('/home/amir/resnet101_voc/all_2048.pkl','rb'))
-=======
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
 class AnnotationTransform(object):
     """Transforms a VOC annotation into a Tensor of bbox coords and label index
@@ -111,28 +99,7 @@ class VOCDetection(data.Dataset):
     """
 
     def __init__(self, root, image_sets, transform=None, target_transform=None,
-<<<<<<< HEAD
-                 dataset_name='VOC0712',dataset_frac=1):
-
-        assert type(dataset_frac) is int and dataset_frac >= 1,'dataset_frac must be an integer >= 1'
-
-
-        self.isTraining=True
-
-        if dataset_frac != 1:
-
-            print('*****************************************************************************************')
-            print('*****************************************************************************************')
-            print('*****************************************************************************************')
-            print('WARNING! USING A DATASET FRACTION SMALLER THAN 100% USED FOR EVALUATION - FRACTION IS 1/{}'.format((dataset_frac)))
-            print('*****************************************************************************************')
-            print('*****************************************************************************************')
-            print('*****************************************************************************************')
-            print('*****************************************************************************************')
-
-=======
                  dataset_name='VOC0712'):
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         self.root = root
         self.image_set = image_sets
         self.transform = transform
@@ -145,39 +112,17 @@ class VOCDetection(data.Dataset):
             rootpath = os.path.join(self.root, 'VOC' + year)
             for line in open(os.path.join(rootpath, 'ImageSets', 'Main', name + '.txt')):
                 self.ids.append((rootpath, line.strip()))
-<<<<<<< HEAD
-        self.ids = self.ids[::dataset_frac]
-
-    def __getitem__(self, index):
-        #im, gt, h, w, feats = self.pull_item(index)
-        im, gt, h, w= self.pull_item (index)
-
-        return im, gt#, feats
-=======
 
     def __getitem__(self, index):
         im, gt, h, w = self.pull_item(index)
 
         return im, gt
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
     def __len__(self):
         return len(self.ids)
 
     def pull_item(self, index):
         img_id = self.ids[index]
-<<<<<<< HEAD
-        #print('loading annotations for:',img_id)
-        target = ET.parse(self._annopath % img_id).getroot()
-        #print('loaded target')
-        img = cv2.imread(self._imgpath % img_id)
-        #print('loaded image')
-        height, width, channels = img.shape
-
-        #print('transforming...')
-        if self.target_transform is not None:
-            target = self.target_transform(target, width, height)
-=======
 
         target = ET.parse(self._annopath % img_id).getroot()
         img = cv2.imread(self._imgpath % img_id)
@@ -186,7 +131,6 @@ class VOCDetection(data.Dataset):
         if self.target_transform is not None:
             target = self.target_transform(target, width, height)
 
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         if self.transform is not None:
             target = np.array(target)
             img, boxes, labels = self.transform(img, target[:, :4], target[:, 4])
@@ -194,18 +138,7 @@ class VOCDetection(data.Dataset):
             img = img[:, :, (2, 1, 0)]
             # img = img.transpose(2, 0, 1)
             target = np.hstack((boxes, np.expand_dims(labels, axis=1)))
-<<<<<<< HEAD
-        #print('done***')
-        if self.isTraining:
-            return torch.from_numpy(img).permute(2, 0, 1), target, height, width#, top_down_source['2012/'+img_id[-1]]
-        else:
-            return torch.from_numpy (img).permute (2, 0, 1), target, height, width#, top_down_source[
-                    #'2007/' + img_id[-1]]
-
-
-=======
         return torch.from_numpy(img).permute(2, 0, 1), target, height, width
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         # return torch.from_numpy(img), target, height, width
 
     def pull_image(self, index):
@@ -267,17 +200,7 @@ def detection_collate(batch):
     """
     targets = []
     imgs = []
-<<<<<<< HEAD
-    feats = []
-    for sample in batch:
-        imgs.append(sample[0])
-        targets.append(torch.FloatTensor(sample[1]))
-        if len(sample) > 2:
-            feats.append(sample[2])
-    return torch.stack(imgs, 0), targets#, torch.stack(feats,0)
-=======
     for sample in batch:
         imgs.append(sample[0])
         targets.append(torch.FloatTensor(sample[1]))
     return torch.stack(imgs, 0), targets
->>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a

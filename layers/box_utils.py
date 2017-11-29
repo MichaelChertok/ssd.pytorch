@@ -50,7 +50,11 @@ def jaccard(box_a, box_b):
     is simply the intersection over union of two boxes.  Here we operate on
     ground truth boxes and default boxes.
     E.g.:
+<<<<<<< HEAD
 
+=======
+        A ∩ B / A ∪ B = A ∩ B / (area(A) + area(B) - A ∩ B)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     Args:
         box_a: (tensor) Ground truth bounding boxes, Shape: [num_objects,4]
         box_b: (tensor) Prior boxes from priorbox layers, Shape: [num_priors,4]

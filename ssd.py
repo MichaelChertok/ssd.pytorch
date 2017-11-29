@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 import os
 
+=======
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
+<<<<<<< HEAD
 
 from data import v2
 from layers import *
@@ -16,6 +20,12 @@ def disable_layers(L,howMuch):
         L[indices[i]]=False
 
     return list(reversed(L))
+=======
+from layers import *
+from data import v2
+import os
+
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
 class SSD(nn.Module):
     """Single Shot Multibox Architecture
@@ -33,6 +43,7 @@ class SSD(nn.Module):
         extras: extra layers that feed to multibox loc and conf layers
         head: "multibox head" consists of loc and conf conv layers
     """
+<<<<<<< HEAD
     def makeControllerLayer(self,m):
         #print(self.controllerBias)
         M = 2 if self.controller_bias else 1
@@ -41,6 +52,10 @@ class SSD(nn.Module):
 
     def __init__(self, phase, base, extras, head, num_classes, controller_bias=False, controller_sigmoid=True, residual_controllers=False,add_relu=False,
                  n_to_learn = [100,100,100,100], add_hint_interpreter=False):
+=======
+
+    def __init__(self, phase, base, extras, head, num_classes):
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         super(SSD, self).__init__()
         self.phase = phase
         self.num_classes = num_classes
@@ -48,8 +63,12 @@ class SSD(nn.Module):
         self.priorbox = PriorBox(v2)
         self.priors = Variable(self.priorbox.forward(), volatile=True)
         self.size = 300
+<<<<<<< HEAD
         self.residual_controllers = residual_controllers
         self.add_relu = add_relu
+=======
+
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         # SSD network
         self.vgg = nn.ModuleList(base)
         # Layer learns to scale the l2 normalized features from conv4_3
@@ -58,6 +77,7 @@ class SSD(nn.Module):
 
         self.loc = nn.ModuleList(head[0])
         self.conf = nn.ModuleList(head[1])
+<<<<<<< HEAD
         hintSize = 20
         self.hintSize=hintSize
         if add_hint_interpreter:
@@ -121,10 +141,13 @@ class SSD(nn.Module):
         #print(zip(self.vgg_is_controller,self.
         #for k in self.vgg_is_controller:
         #    assert k==False
+=======
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
         if phase == 'test':
             self.softmax = nn.Softmax()
             self.detect = Detect(num_classes, 0, 200, 0.01, 0.45)
+<<<<<<< HEAD
     
 
 
@@ -186,6 +209,10 @@ class SSD(nn.Module):
 
     def forward(self, x, hint = None, hint_override_vgg = None, extra_ovr = None,
                 loc_ovr = None, conf_ovr = None):
+=======
+
+    def forward(self, x):
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         """Applies network layers and ops on input image(s) x.
 
         Args:
@@ -208,6 +235,7 @@ class SSD(nn.Module):
         loc = list()
         conf = list()
 
+<<<<<<< HEAD
         # check which layers need to be hinted.
 
         hint_override_vgg = self.expand_ovr(hint_override_vgg,len(self.vgg))
@@ -230,26 +258,41 @@ class SSD(nn.Module):
             #print ('---------------{}----------------'.format(k))
             x = self.vgg[k](x)
             x = self.applyController(x, hint, self.vgg_controllers[k], hint_override_vgg[k],self.vgg_is_controller[k])
+=======
+        # apply vgg up to conv4_3 relu
+        for k in range(23):
+            x = self.vgg[k](x)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
         s = self.L2Norm(x)
         sources.append(s)
 
         # apply vgg up to fc7
+<<<<<<< HEAD
 
         for k in range(run_up_to, len(self.vgg)):
             x = self.vgg[k](x)
             x = self.applyController(x, hint, self.vgg_controllers[k], hint_override_vgg[k],self.vgg_is_controller[k])
+=======
+        for k in range(23, len(self.vgg)):
+            x = self.vgg[k](x)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         sources.append(x)
 
         # apply extra layers and cache source layer outputs
         for k, v in enumerate(self.extras):
+<<<<<<< HEAD
             x = v(x)
             x = self.applyController(x,hint,self.extra_controllers[k],extra_ovr[k],self.extra_is_controller[k])
             x = F.relu(x)#, inplace=True)
+=======
+            x = F.relu(v(x), inplace=True)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
             if k % 2 == 1:
                 sources.append(x)
 
         # apply multibox head to source layers
+<<<<<<< HEAD
         for (x, l, c, lc, cc, l_ovr, c_ovr, is_l,is_c) in zip(sources, self.loc, self.conf, self.loc_controllers, self.conf_controllers,
                                      loc_ovr,conf_ovr, self.loc_is_controller, self.conf_is_controller):
             L = l(x)
@@ -259,6 +302,11 @@ class SSD(nn.Module):
 
             loc.append(L.permute(0, 2, 3, 1).contiguous())
             conf.append(C.permute(0, 2, 3, 1).contiguous())
+=======
+        for (x, l, c) in zip(sources, self.loc, self.conf):
+            loc.append(l(x).permute(0, 2, 3, 1).contiguous())
+            conf.append(c(x).permute(0, 2, 3, 1).contiguous())
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
         loc = torch.cat([o.view(o.size(0), -1) for o in loc], 1)
         conf = torch.cat([o.view(o.size(0), -1) for o in conf], 1)
@@ -328,6 +376,7 @@ def add_extras(cfg, i, batch_norm=False):
     return layers
 
 
+<<<<<<< HEAD
 def multibox(vgg, extra_layers, cfg, num_classes, used_bn=False):
     loc_layers = []
     conf_layers = []
@@ -335,14 +384,27 @@ def multibox(vgg, extra_layers, cfg, num_classes, used_bn=False):
     if used_bn:
         vgg_source = [34,46]
 
+=======
+def multibox(vgg, extra_layers, cfg, num_classes):
+    loc_layers = []
+    conf_layers = []
+    vgg_source = [24, -2]
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     for k, v in enumerate(vgg_source):
         loc_layers += [nn.Conv2d(vgg[v].out_channels,
                                  cfg[k] * 4, kernel_size=3, padding=1)]
         conf_layers += [nn.Conv2d(vgg[v].out_channels,
                         cfg[k] * num_classes, kernel_size=3, padding=1)]
     for k, v in enumerate(extra_layers[1::2], 2):
+<<<<<<< HEAD
         loc_layers += [nn.Conv2d(v.out_channels, cfg[k] * 4, kernel_size=3, padding=1)]
         conf_layers += [nn.Conv2d(v.out_channels, cfg[k] * num_classes, kernel_size=3, padding=1)]
+=======
+        loc_layers += [nn.Conv2d(v.out_channels, cfg[k]
+                                 * 4, kernel_size=3, padding=1)]
+        conf_layers += [nn.Conv2d(v.out_channels, cfg[k]
+                                  * num_classes, kernel_size=3, padding=1)]
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     return vgg, extra_layers, (loc_layers, conf_layers)
 
 
@@ -361,14 +423,19 @@ mbox = {
 }
 
 
+<<<<<<< HEAD
 def build_ssd(phase, size=300, num_classes=21, controller_bias = False, controller_sigmoid=False, insertBNLayers=False,
               residual_controllers=False, add_relu=False, n_to_learn=[100,100,100,100],add_hint_interpreter=False):
+=======
+def build_ssd(phase, size=300, num_classes=21):
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     if phase != "test" and phase != "train":
         print("Error: Phase not recognized")
         return
     if size != 300:
         print("Error: Sorry only SSD300 is supported currently!")
         return
+<<<<<<< HEAD
     return SSD(phase, *multibox(vgg(base[str(size)], 3, batch_norm=insertBNLayers),
                                 add_extras(extras[str(size)], 1024),
                                 mbox[str(size)], num_classes, insertBNLayers),
@@ -378,3 +445,9 @@ def build_ssd(phase, size=300, num_classes=21, controller_bias = False, controll
                residual_controllers=residual_controllers,
                add_relu=add_relu,n_to_learn=n_to_learn,
                add_hint_interpreter=add_hint_interpreter)
+=======
+
+    return SSD(phase, *multibox(vgg(base[str(size)], 3),
+                                add_extras(extras[str(size)], 1024),
+                                mbox[str(size)], num_classes), num_classes)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a

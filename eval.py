@@ -45,9 +45,14 @@ parser.add_argument('--top_k', default=5, type=int,
 parser.add_argument('--cuda', default=True, type=str2bool,
                     help='Use cuda to train model')
 parser.add_argument('--voc_root', default=VOCroot, help='Location of VOC root directory')
+<<<<<<< HEAD
 #--trained_model weights/ssd300_0712_115000.pth --voc_root ~/code/jacky/
 args = parser.parse_args()
 #args = parser.parse_args(['--trained_model', 'weights/ssd300_0712_115000.pth','--voc_root','/home/amir/data/voc/VOCdevkit/'])
+=======
+
+args = parser.parse_args()
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 
 if not os.path.exists(args.save_folder):
     os.mkdir(args.save_folder)
@@ -61,9 +66,16 @@ annopath = os.path.join(args.voc_root, 'VOC2007', 'Annotations', '%s.xml')
 imgpath = os.path.join(args.voc_root, 'VOC2007', 'JPEGImages', '%s.jpg')
 imgsetpath = os.path.join(args.voc_root, 'VOC2007', 'ImageSets', 'Main', '{:s}.txt')
 YEAR = '2007'
+<<<<<<< HEAD
 devkit_path = args.voc_root + 'VOC' + YEAR
 dataset_mean = (104, 117, 123)
 set_type = 'test'
+=======
+devkit_path = VOCroot + 'VOC' + YEAR
+dataset_mean = (104, 117, 123)
+set_type = 'test'
+
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 class Timer(object):
     """A simple timer."""
     def __init__(self):
@@ -251,16 +263,27 @@ cachedir: Directory for caching the annotations
         lines = f.readlines()
     imagenames = [x.strip() for x in lines]
     if not os.path.isfile(cachefile):
+<<<<<<< HEAD
     #if True: # just always reload the records, to avoid bugs.
+=======
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         # load annots
         recs = {}
         for i, imagename in enumerate(imagenames):
             recs[imagename] = parse_rec(annopath % (imagename))
+<<<<<<< HEAD
             #if i % 100 == 0:
             #    print('Reading annotation for {:d}/{:d}'.format(
             #       i + 1, len(imagenames)))
         # save
         #print('Saving cached annotations to {:s}'.format(cachefile))
+=======
+            if i % 100 == 0:
+                print('Reading annotation for {:d}/{:d}'.format(
+                   i + 1, len(imagenames)))
+        # save
+        print('Saving cached annotations to {:s}'.format(cachefile))
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         with open(cachefile, 'wb') as f:
             pickle.dump(recs, f)
     else:

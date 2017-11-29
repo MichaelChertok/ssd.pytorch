@@ -23,7 +23,11 @@ parser.add_argument('--basenet', default='vgg16_reducedfc.pth', help='pretrained
 parser.add_argument('--jaccard_threshold', default=0.5, type=float, help='Min Jaccard index for matching')
 parser.add_argument('--batch_size', default=16, type=int, help='Batch size for training')
 parser.add_argument('--resume', default=None, type=str, help='Resume from checkpoint')
+<<<<<<< HEAD
 parser.add_argument('--num_workers', default=1, type=int, help='Number of workers used in dataloading')
+=======
+parser.add_argument('--num_workers', default=2, type=int, help='Number of workers used in dataloading')
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 parser.add_argument('--iterations', default=120000, type=int, help='Number of training iterations')
 parser.add_argument('--start_iter', default=0, type=int, help='Begin counting iterations starting from this value (should be used with resume)')
 parser.add_argument('--cuda', default=True, type=str2bool, help='Use cuda to train model')
@@ -36,6 +40,7 @@ parser.add_argument('--visdom', default=False, type=str2bool, help='Use visdom t
 parser.add_argument('--send_images_to_visdom', type=str2bool, default=False, help='Sample a random image from each 10th batch, send it to visdom after augmentations step')
 parser.add_argument('--save_folder', default='weights/', help='Location to save checkpoint models')
 parser.add_argument('--voc_root', default=VOCroot, help='Location of VOC root directory')
+<<<<<<< HEAD
 parser.add_argument('--use_hint', default=False, type=str2bool, help='Use Network Priming')
 parser.add_argument('--hint_vgg', default=False, type=str2bool, help='Apply priming to vgg stage')
 parser.add_argument('--hint_extra', default=False, type=str2bool, help='Apply priming to extra layers stage')
@@ -45,6 +50,10 @@ parser.add_argument('--hint_conf', default=False, type=str2bool, help='Apply pri
 #args = parser.parse_args(['--voc_root','/home/amir/Dropbox/code/jacky','--cuda','1'])
 args = parser.parse_args(['--voc_root','/home/amir/data/voc/VOCdevkit','--cuda','1','--visdom','False'])
 #args = parser.parse_args()
+=======
+args = parser.parse_args()
+
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 if args.cuda and torch.cuda.is_available():
     torch.set_default_tensor_type('torch.cuda.FloatTensor')
 else:
@@ -55,8 +64,12 @@ cfg = (v1, v2)[args.version == 'v2']
 if not os.path.exists(args.save_folder):
     os.mkdir(args.save_folder)
 
+<<<<<<< HEAD
 #train_sets = [('2007', 'trainval'), ('2012', 'trainval')]
 train_sets = [('2007_p', 'train')]
+=======
+train_sets = [('2007', 'trainval'), ('2012', 'trainval')]
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 # train_sets = 'train'
 ssd_dim = 300  # only support 300 now
 means = (104, 117, 123)  # only support voc now
@@ -81,6 +94,7 @@ if args.cuda:
     net = torch.nn.DataParallel(ssd_net)
     cudnn.benchmark = True
 
+<<<<<<< HEAD
 import itertools
 if args.resume:
     print('Resuming training, loading {}...'.format(args.resume))
@@ -101,6 +115,12 @@ if args.resume:
 else:
     assert not args.use_hint,'Not supporting learning to prime for a non-pretrained model'
 
+=======
+if args.resume:
+    print('Resuming training, loading {}...'.format(args.resume))
+    ssd_net.load_weights(args.resume)
+else:
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
     vgg_weights = torch.load(args.save_folder + args.basenet)
     print('Loading base network...')
     ssd_net.vgg.load_state_dict(vgg_weights)
@@ -130,6 +150,10 @@ optimizer = optim.SGD(net.parameters(), lr=args.lr,
                       momentum=args.momentum, weight_decay=args.weight_decay)
 criterion = MultiBoxLoss(num_classes, 0.5, True, 0, True, 3, 0.5, False, args.cuda)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
 def train():
     net.train()
     # loss counters
@@ -199,6 +223,7 @@ def train():
             images = Variable(images)
             targets = [Variable(anno, volatile=True) for anno in targets]
         # forward
+<<<<<<< HEAD
 
         hints = None
 
@@ -215,6 +240,10 @@ def train():
         t0 = time.time()
         # vgg, extra,loc,conf
         out = net(images,hints,args.hint_vgg,args.hint_extra,args.hint_loc,args.hint_conf)
+=======
+        t0 = time.time()
+        out = net(images)
+>>>>>>> 197f922fbb11c9d7e2b6c75d9467e337eb18138a
         # backprop
         optimizer.zero_grad()
         loss_l, loss_c = criterion(out, targets)
